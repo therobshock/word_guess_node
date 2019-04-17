@@ -5,14 +5,15 @@ var Word = require("./Word.js");
 var wordList = ["star wars", "lord of the rings", "avengers", "scott pilgrim", "rick and morty", "futurama"];
 var newWord;
 var guessesLeft = 10;
+var lettersCorrect = 0;
 
 gameOpen();
 
 function gameOpen(){
     console.log
-    ("\nWelcome to the Word Guess Game! \nGuess a correct letter and reveal the word \nIf you miss you lose a guess");
-    console.log("You have " + guessesLeft + " guesses per word");
-    console.log("Are you ready?\n");
+    ("\x1b[34m\nWelcome to the Word Guess Game! \nGuess a correct letter and reveal the word \nIf you miss you lose a guess\x1b[0m");
+    console.log("\x1b[32mYou have " + guessesLeft + " guesses per word\x1b[0m");
+    console.log("\x1b[31mAre you ready?\n\x1b[0m");
 
     inquirer.prompt(
         {
@@ -51,14 +52,14 @@ function playGame() {
     ).then(function(response) {
         var guess = response.guess.toLowerCase();
         var wrongGuess = newWord.letters.length;
-        var lettersCorrect = 1;
+        lettersCorrect = 0;
+        
+        for (var x = 0; x < newWord.letters.length; x++) {
 
-        for (var x in newWord.letters) {
+            newWord.letters[x].letterGuess(guess);
 
             var wordLetter = newWord.letters[x].letter;
             var letterIsGuessed = newWord.letters[x].correct;
-
-            newWord.letters[x].letterGuess(guess);
 
             if (guess != wordLetter) {
                 wrongGuess--;
@@ -71,10 +72,10 @@ function playGame() {
 
         if (wrongGuess === 0) {
             guessesLeft--;
-            console.log("\nINCORRECT!");
-            console.log("You have " + guessesLeft + " guesses left");
+            console.log("\x1b[31m\nINCORRECT!");
+            console.log("You have " + guessesLeft + " guesses left\x1b[0m");
         } else {
-            console.log("\nCORRECT!");
+            console.log("\x1b[32m\nCORRECT!\x1b[0m");
         }
 
         if (guessesLeft === 0) {
@@ -96,16 +97,16 @@ function wordDisplay(word) {
         var character = word[x].charDisplay();
         text += character + " ";
     };
-    console.log("\n" + text, "\n"); 
+    console.log("\x1b[34m\n" + text, "\n\x1b[0m"); 
 }
 
 function gameWon(){
-    console.log("You got it!", newWord.word, "\n");
+    console.log("You got it!\x1b[32m", newWord.word, "\n\x1b[0m");
     gameOver();
 }
 
 function gameLost() {
-    console.log("\nOut of guesses! The word is " + newWord.word, "\n");
+    console.log("\x1b[31m\nOut of guesses!\x1b[0m", "The word is\x1b[34m",  newWord.word, "\x1b[0m\n");
     gameOver();
 }
 
@@ -121,7 +122,7 @@ function gameOver() {
         if (response.playAgain) {
             gameStart();
         } else {
-            console.log("\nThanks for playing!")
+            console.log("\x1b[35m\nThanks for playing!\x1b[0m");
         }
     })
 };
